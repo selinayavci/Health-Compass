@@ -1,73 +1,138 @@
-# Health Compass
+# 🧭 Health Compass
 
-AI destekli semptom analizi ve uzman yönlendirme uygulaması.
+> **Yapay Zeka Destekli Kişisel Sağlık Pusulanız.**
 
-## Kurulum
+---
 
-### 1. Bağımlılıkları yükle
+## 🔗 Bağlantılar
 
+| | Link |
+|---|---|
+| 🌐 **Yayın Linki** | [Linkini buraya yapıştır] |
+| 🎥 **Demo Videosu** | [Loom/YouTube linkini buraya yapıştır] |
+
+---
+
+## 📌 Proje Hakkında
+
+**Health Compass**, bireylerin sağlık semptomlarını değerlendirmelerine ve doğru uzmana ulaşmalarına yardımcı olan yapay zeka destekli bir web uygulamasıdır. UpSchool bünyesindeki "Birbirini Geliştiren Kadınlar" programı kapsamındaki AI Buildathon için geliştirilmiştir.
+
+### Çözülen Problem
+
+Türkiye'de ve dünyada milyonlarca insan iki kritik sorunla karşı karşıyadır:
+
+1. **Aciliyet Belirsizliği:** Semptomların ne kadar acil olduğunu bilememe — insanlar gereksiz yere acil servisleri meşgul ediyor ya da gerçekten acil vakaları hafife alıyor.
+2. **Uzmanlık Eşitsizliği:** Özellikle karmaşık vakalarda doğru ve deneyimli uzmana nasıl ulaşılacağını bilememe. Doğru bilgiye erişim hâlâ büyük ölçüde kişisel ilişkilere veya şansa bağlı.
+
+### Çözüm
+
+Health Compass, kullanıcıya **4 adımlı kesintisiz bir deneyim** sunar:
+
+| Adım | Ne Olur? |
+|---|---|
+| 1️⃣ **Giriş** | Glassmorphism arayüzüyle karşılama |
+| 2️⃣ **Analiz** | Semptomlar Gemini 2.5 Flash ile işlenir |
+| 3️⃣ **Sonuç** | Renk kodlu triage kartı (🔴 ACİL / 🟡 BUGÜN / 🟢 EV TAKİBİ) |
+| 4️⃣ **Aksiyon** | "Bu Uzmanı Bul" → Smooth Scroll + Otomatik Form Doldurma (Pusula) |
+
+### Öne Çıkan Özellikler
+
+- 🤖 **Gemini 2.5 Flash** — Türkçe semptom analizi ve garantili JSON yapılandırma
+- 🔄 **Akıllı Fallback** — 2.5 → 2.0 → 1.5 model zinciri; 429 kota hatasında akıllı atlama
+- 🏥 **3 Uzman Arama Modu** — Şehir bazlı / Türkiye geneli / En yakın kurum
+- ⚖️ **Kurum Tercihi** — Kamu / Özel / Fark Etmez filtresi
+- 🧭 **Pusula Özelliği** — Triage'dan uzman formuna sıfır sürtünmeli geçiş
+- 🛡️ **Rate Limiting** — 200 istek/gün, 10 istek/dakika güvenlik sınırı
+
+---
+
+## 🛠️ Teknoloji Yığını
+
+| Katman | Teknoloji |
+|---|---|
+| AI | Google Gemini 2.5 Flash (+ 2.0 / 1.5 fallback) |
+| Backend | Python 3.11 + Flask 3.x |
+| Frontend | HTML5 + CSS3 (Glassmorphism) + Vanilla JS |
+| Deploy | Netlify (frontend) + Render.com (backend) |
+
+---
+
+## 🚀 Kurulum (Installation)
+
+### Gereksinimler
+
+- Python 3.9+
+- Modern bir web tarayıcısı (Chrome, Firefox, Safari)
+- Gemini API anahtarı — [aistudio.google.com](https://aistudio.google.com) adresinden **ücretsiz** alınabilir
+
+### Adımlar
+
+**1.** Projeyi klonlayın:
 ```bash
+git clone https://github.com/kullanici-adi/health-compass.git
 cd health-compass
+```
+
+**2.** `.env` dosyası oluşturun ve API anahtarınızı ekleyin:
+```bash
+echo "GEMINI_API_KEY=buraya_api_anahtarinizi_yazin" > .env
+```
+
+**3.** Bağımlılıkları yükleyin:
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Google Gemini API anahtarını ekle
-
-1. [Google AI Studio](https://aistudio.google.com) adresine gidin
-2. "Get API key" ile ücretsiz API anahtarı alın
-3. Proje klasöründe `.env` dosyası oluşturun:
-
+**4.** Uygulamayı başlatın:
 ```bash
-# Windows PowerShell
-Copy-Item .env.example .env
-
-# Sonra .env dosyasını düzenleyin ve GEMINI_API_KEY değerini yazın
+python features/app.py
 ```
 
-4. `.env` dosyasının içeriği:
+Tarayıcınızda `http://localhost:5000` adresini açın.
 
-```
-GEMINI_API_KEY=buraya_aldiginiz_api_anahtari
-```
+---
 
-**Önemli:** `.env` dosyası Git'e yüklenmez (güvenlik için). API anahtarınızı asla paylaşmayın.
-
-### 3. Uygulamayı çalıştır
-
-```bash
-python app.py
-```
-
-Tarayıcıda açın: **http://localhost:5000**
-
-## Proje Yapısı
+## 📁 Proje Yapısı
 
 ```
 health-compass/
-├── app.py              # Flask uygulaması
-├── gemini_service.py   # Gemini API entegrasyonu
-├── prompt_templates.py # AI prompt şablonları
+├── features/
+│   ├── app.py                  # Flask sunucu ve API endpoint'leri
+│   ├── gemini_service.py       # Gemini entegrasyonu + fallback yönetimi
+│   ├── prompt_templates.py     # AI prompt şablonları (Triage + 3 Uzman modu)
+│   ├── static/
+│   │   ├── css/style.css       # Glassmorphism tasarım
+│   │   └── js/                 # Vanilla JS (Smooth Scroll, Pusula)
+│   └── templates/
+│       └── index.html          # Tek sayfalık uygulama
+├── .env.example                # API anahtarı örnek şablonu
+├── .gitignore
 ├── requirements.txt
-├── .env                # API anahtarı (kendiniz oluşturun)
-└── features/
-    ├── static/
-    │   ├── css/style.css
-    │   └── js/
-    └── templates/
-        └── index.html
+├── README.md
+├── idea.md
+├── user-flow.md
+└── tech-stack.md
 ```
 
-## API Anahtarı Entegrasyonu
+---
 
-API anahtarı **`.env`** dosyasında saklanır. `gemini_service.py` bu dosyayı `python-dotenv` ile otomatik okur:
+## 📄 Dokümantasyon
 
-```python
-# gemini_service.py içinde:
-from dotenv import load_dotenv
-load_dotenv()  # .env dosyasını yükler
+| Dosya | İçerik |
+|---|---|
+| [`idea.md`](idea.md) | Problem tanımı, kullanıcı profili, AI'ın rolü |
+| [`user-flow.md`](user-flow.md) | 4 adımlı kullanıcı akışı ve Pusula özelliği |
+| [`tech-stack.md`](tech-stack.md) | Teknoloji kararları ve gerekçeleri |
 
-api_key = os.getenv('GEMINI_API_KEY')
-genai.configure(api_key=api_key)
-```
+---
 
-`app.py` başlarken `.env` yüklendiği için `GEMINI_API_KEY` ortam değişkeni olarak kullanılabilir.
+## 👤 Geliştirici
+
+**Selinay AVCI**
+AI Buildathon 2025 — UpSchool "Birbirini Geliştiren Kadınlar" Programı Mezunu
+
+---
+
+## ⚠️ Yasal Uyarı
+
+Health Compass bir tıbbi tanı aracı **değildir**. Sunulan bilgiler yalnızca genel yönlendirme amaçlıdır. Sağlık kararlarınız için mutlaka bir sağlık profesyoneliyle görüşünüz.
