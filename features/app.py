@@ -33,7 +33,7 @@ limiter = Limiter(
 
 # Gemini servisini içe aktar
 try:
-    from gemini_service import semptomu_analiz_et, uzman_bul
+    from features.gemini_service import semptomu_analiz_et, uzman_bul
     GEMINI_HAZIR = True
 except Exception as e:
     GEMINI_HAZIR = False
