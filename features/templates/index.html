@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Health Compass — Premium Sağlık Asistanı</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="app-header">
+    <a href="/" class="app-logo">
+      <span class="app-logo__icon">
+        <svg class="app-logo__compass" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="26" stroke="currentColor" stroke-width="5"/>
+          <path d="M32 14 L45 36 L32 50 L19 36 L32 14 Z" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+          <circle cx="32" cy="32" r="4.5" fill="currentColor"/>
+        </svg>
+      </span>
+      <span><span class="logo-health">Health</span> <span class="logo-compass">Compass</span></span>
+    </a>
+  </header>
+
+  <main class="main-content">
+    <section id="ana-sayfa" class="section">
+      <h1>Yapay Zeka Destekli Kişisel Sağlık Pusulanız</h1>
+      <p><strong>Doğru kararı vermenize güvenle yardımcı oluyoruz.</strong></p>
+      <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 16px;">
+        <button id="btn-semptom-basla" class="btn btn-primary">Semptomlarımı Analiz Et</button>
+        <button id="btn-uzman-bul" class="btn btn-secondary">Uzman Bul</button>
+      </div>
+    </section>
+
+    <section id="uzman-bul" class="section hidden">
+      <button id="btn-uzman-geri" class="btn btn-secondary" style="margin-bottom: 20px;">← Geri</button>
+      <h2>Uzman & Sağlık Kuruluşu Ara</h2>
+      <div id="uzman-arama">
+        <form id="uzman-formu">
+          <div class="form-group">
+            <label for="uzman-semptom">Semptomlarınız (isteğe bağlı)</label>
+            <textarea id="uzman-semptom" name="semptom" rows="3" placeholder="Örn: Geçmeyen diz ağrısı..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Arama türü</label>
+            <div class="uzman-mod-secim">
+              <label class="uzman-mod-kart"><input type="radio" name="arama_modu" value="konum" checked><span>📍 Konuma Göre</span></label>
+              <label class="uzman-mod-kart"><input type="radio" name="arama_modu" value="uzmanlik"><span>🏥 Uzmanlığa Göre</span></label>
+            </div>
+          </div>
+          <div id="uzman-konum-alan" class="form-group">
+            <label>Konumunuz</label>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <button type="button" id="btn-konum-kullan" class="btn btn-secondary">📍 Konumumu Kullan</button>
+              <input type="text" id="uzman-sehir" name="sehir" placeholder="Şehir (Örn: İstanbul)" style="flex: 1;">
+            </div>
+          </div>
+          <div id="uzman-uzmanlik-alan" class="form-group hidden">
+            <label for="uzman-turu">Uzmanlık Alanı *</label>
+            <input type="text" id="uzman-turu" name="uzman_turu" placeholder="Örn: Kardiyoloji">
+          </div>
+          <div class="form-group">
+            <label>Kurum Tercihi</label>
+            <div class="radio-group">
+              <label><input type="radio" name="tercih" value="Kamu"> Kamu</label>
+              <label><input type="radio" name="tercih" value="Özel"> Özel</label>
+              <label><input type="radio" name="tercih" value="Fark Etmez" checked> Fark Etmez</label>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="btn-ara-ana">Ara</button>
+        </form>
+      </div>
+      <div id="uzman-sonuc" class="uzman-sonuc hidden">
+        <h3>Bulunan Uzmanlar</h3>
+        <div id="uzman-liste"></div>
+      </div>
+    </section>
+
+    <section id="semptom-giris" class="section hidden">
+      <button id="btn-geri" class="btn btn-secondary" style="margin-bottom: 20px;">← Geri</button>
+      <h2>Semptomlarınızı Anlatın</h2>
+      <form id="semptom-formu">
+        <div class="symptom-input-card">
+          <textarea id="semptom-metni" name="semptom" minlength="10" placeholder="Belirtilerinizi detaylı yazın..." required></textarea>
+          <div class="symptom-input-card__counter"><span id="karakter-sayaci">0 / 1000</span></div>
+        </div>
+        <details style="margin-top: 15px;">
+          <summary>Ek Bilgi Ekle (Daha Doğru Sonuç İçin)</summary>
+          <div class="form-group">
+            <label>Yaş Aralığı</label>
+            <select id="yas-araligi" name="yas">
+              <option value="">Belirtilmedi</option>
+              <option value="0-5">0-5 Yaş</option>
+              <option value="6-15">6-15 Yaş</option>
+              <option value="16-25">16-25 Yaş</option>
+              <option value="26-45">26-45 Yaş</option>
+              <option value="46-65">46-65 Yaş</option>
+              <option value="66+">66+ Yaş</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cinsiyet">Cinsiyet</label>
+            <select id="cinsiyet" name="cinsiyet">
+                <option value="">Belirtilmedi</option>
+                <option value="Kadın">Kadın</option>
+                <option value="Erkek">Erkek</option>
+            </select>
+        </div>
+          <div class="form-group">
+            <label>Semptom Ne Kadar Süredir Var?</label>
+            <select id="semptom-suresi" name="semptom_suresi">
+              <option value="">Belirtilmedi</option>
+              <option value="Yeni">Yeni başladı (Bugün)</option>
+              <option value="2-3 gün">2-3 gündür</option>
+              <option value="1 hafta">1 haftadır</option>
+              <option value="Kronik">Uzun süredir</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Kronik Hastalık Var mı?</label>
+            <div class="radio-group">
+              <label><input type="radio" name="kronik_hastalik" value="Hayır" checked> Hayır</label>
+              <label><input type="radio" name="kronik_hastalik" value="Evet"> Evet</label>
+              <label><input type="radio" name="kronik_hastalik" value="Bilmiyorum"> Bilmiyorum</label>
+            </div>
+          </div>
+        </details>
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Analiz Et</button>
+      </form>
+
+      <div id="sonuc-karti" class="result-card hidden">
+        <div class="result-card__glass">
+          <div class="result-card__header">
+            <div id="sonuc-icon" class="result-card__icon"></div>
+            <div>
+              <h3 id="sonuc-baslik">—</h3>
+              <p id="sonuc-alt-baslik" style="opacity: 0.8; font-size: 0.9rem;"></p>
+            </div>
+          </div>
+          <p id="sonuc-gerekce" style="line-height: 1.6; margin: 15px 0;"></p>
+          <div id="sonuc-uzman" class="hidden">
+            <div style="background: rgba(255,255,255,0.4); padding: 15px; border-radius: 12px; border: 1px solid rgba(0,196,179,0.3);">
+              <strong>Önerilen Branş:</strong> <span id="sonuc-uzman-metin"></span>
+              <button type="button" id="btn-uzman-bul-sonuc" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Bu Uzmanı Bul →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ICONS = {
+      dusuk: '<svg viewBox="0 0 24 24" fill="#10b981"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
+      orta: '<svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2L1 21h22L12 2zm0 3.45l8.27 14.3H3.73L12 5.45zM11 16h2v2h-2v-2zm0-6h2v4h-2V10z"/></svg>',
+      yuksek: '<svg viewBox="0 0 24 24" fill="#ef4444"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>'
+    };
+
+    const sections = { ana: document.getElementById('ana-sayfa'), semptom: document.getElementById('semptom-giris'), uzman: document.getElementById('uzman-bul') };
+    let sonUzmanTuru = null;
+
+    document.getElementById('btn-semptom-basla').onclick = () => { sections.ana.classList.add('hidden'); sections.semptom.classList.remove('hidden'); };
+    document.getElementById('btn-uzman-bul').onclick = () => { sections.ana.classList.add('hidden'); sections.uzman.classList.remove('hidden'); };
+    document.querySelectorAll('#btn-geri, #btn-uzman-geri').forEach(b => b.onclick = () => { 
+      Object.values(sections).forEach(s => s.classList.add('hidden')); sections.ana.classList.remove('hidden'); 
+    });
+
+    function uzmanModDegisti() {
+      const mod = document.querySelector('input[name="arama_modu"]:checked').value;
+      document.getElementById('uzman-konum-alan').classList.toggle('hidden', mod !== 'konum');
+      document.getElementById('uzman-uzmanlik-alan').classList.toggle('hidden', mod !== 'uzmanlik');
+    }
+    document.querySelectorAll('input[name="arama_modu"]').forEach(r => r.onchange = uzmanModDegisti);
+
+    // ANALİZ FORMU (Kritik Düzeltme)
+    document.getElementById('semptom-formu').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      btn.textContent = 'Analiz Ediliyor...';
+      
+      const payload = {
+        semptom: document.getElementById('semptom-metni').value,
+        ek_bilgi: { 
+          yas: document.getElementById('yas-araligi').value || "Belirtilmedi", 
+          cinsiyet: document.getElementById('cinsiyet').value || "Belirtilmedi",
+          semptom_suresi: document.getElementById('semptom-suresi').value || "Belirtilmedi",
+          kronik_hastalik: document.querySelector('input[name="kronik_hastalik"]:checked')?.value || "Belirtilmedi"
+        }
+      };
+
+      const res = await fetch('/api/analiz', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      sonucKartiniGoster(data);
+      btn.textContent = 'Analiz Et';
+    };
+
+    function sonucKartiniGoster(v) {
+      const aciliyet = (v.aciliyet || 'BELİRSİZ').replace(/_/g, ' '); 
+      const seviye = v.aciliyet === 'ACİL' ? 'yuksek' : (v.aciliyet === 'EV_TAKİBİ' ? 'dusuk' : 'orta');
+      const baslik = document.getElementById('sonuc-baslik');
+      
+      baslik.textContent = aciliyet;
+      baslik.style.color = seviye === 'yuksek' ? '#ef4444' : (seviye === 'dusuk' ? '#10b981' : '#f59e0b');
+      document.getElementById('sonuc-icon').innerHTML = ICONS[seviye];
+      document.getElementById('sonuc-alt-baslik').textContent = seviye === 'yuksek' ? 'Acil müdahale gerekebilir.' : (seviye === 'dusuk' ? 'Evde takip yeterli olabilir.' : 'Bir uzmana görünmeniz önerilir.');
+      
+      // Gerekçe kısmını her türlü anahtar kelimeye karşı (aciliyet_gerekce, gerekce, analiz) kontrol et
+      document.getElementById('sonuc-gerekce').textContent = v.aciliyet_gerekce || v.gerekce || v.analiz || 'Analiz başarıyla tamamlandı.';
+      
+      if (v.uzman_turu) {
+        sonUzmanTuru = v.uzman_turu;
+        document.getElementById('sonuc-uzman-metin').textContent = v.uzman_turu;
+        document.getElementById('sonuc-uzman').classList.remove('hidden');
+      }
+      document.getElementById('sonuc-karti').classList.remove('hidden');
+      document.getElementById('sonuc-karti').scrollIntoView({behavior: 'smooth'});
+    }
+
+    // UZMAN ARAMA FORMU
+    document.getElementById('uzman-formu').onsubmit = async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-ara-ana');
+      btn.textContent = 'Aranıyor...';
+      const mod = document.querySelector('input[name="arama_modu"]:checked').value;
+      const res = await fetch('/api/uzman-bul', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          sehir: document.getElementById('uzman-sehir').value,
+          uzman_turu: mod === 'konum' ? (sonUzmanTuru || 'Genel Sağlık') : document.getElementById('uzman-turu').value,
+          tercih: document.querySelector('input[name="tercih"]:checked')?.value || 'Fark Etmez',
+          konum_yakin: mod === 'konum',
+          turkiye_geneli: mod === 'uzmanlik'
+        })
+      });
+      const data = await res.json();
+      const liste = document.getElementById('uzman-liste');
+      liste.innerHTML = (data.uzmanlar || []).map(u => `
+        <div class="uzman-kart" style="background: white; padding: 20px; border-radius: 15px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-left: 5px solid #00c4b3;">
+          <h4 style="margin:0; color: #333;">${u.ad}</h4>
+          <p style="margin:5px 0; font-size: 0.9rem; color: #64748b;">${u.kurum} — ${u.sehir}</p>
+        </div>
+      `).join('');
+      document.getElementById('uzman-sonuc').classList.remove('hidden');
+      document.getElementById('uzman-sonuc').scrollIntoView({behavior: 'smooth'});
+      btn.textContent = 'Ara';
+    };
+
+    document.addEventListener('click', (e) => {
+      if (e.target.id === 'btn-uzman-bul-sonuc') {
+        sections.semptom.classList.add('hidden');
+        sections.uzman.classList.remove('hidden');
+        document.getElementById('uzman-turu').value = sonUzmanTuru || '';
+        document.querySelector('input[name="arama_modu"][value="uzmanlik"]').checked = true;
+        uzmanModDegisti();
+      }
+    });
+
+    document.getElementById('btn-konum-kullan').onclick = function() {
+      this.textContent = 'Alınıyor...';
+      navigator.geolocation.getCurrentPosition(async (p) => {
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${p.coords.latitude}&lon=${p.coords.longitude}&format=json`);
+        const data = await res.json();
+        document.getElementById('uzman-sehir').value = data.address.city || data.address.province || '';
+        this.textContent = '📍 Konum Alındı';
+      });
+    };
+    document.getElementById('semptom-metni').oninput = function() { document.getElementById('karakter-sayaci').textContent = this.value.length + ' / 1000'; };
+  </script>
+</body>
+</html
