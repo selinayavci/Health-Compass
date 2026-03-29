@@ -7,7 +7,8 @@ import os
 import traceback
 from pathlib import Path
 
-from flask import Flask, request, jsonify, render_template from flask_cors import CORS
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from dotenv import load_dotenv
