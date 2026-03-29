@@ -16,7 +16,10 @@ try:
 except ImportError:
     _ResourceExhausted = None
 
-from prompt_templates import TRIAGE_PROMPT, UZMAN_PROMPT, UZMAN_PROMPT_TURKIYE, UZMAN_PROMPT_YAKIN
+try:
+    from prompt_templates import TRIAGE_PROMPT, UZMAN_PROMPT, UZMAN_PROMPT_TURKIYE, UZMAN_PROMPT_YAKIN
+except ImportError:
+    from features.prompt_templates import TRIAGE_PROMPT, UZMAN_PROMPT, UZMAN_PROMPT_TURKIYE, UZMAN_PROMPT_YAKIN
 
 # .env: proje kökünden yükle (app features/ altından çalışsa bile anahtar bulunsun)
 _ROOT = Path(__file__).resolve().parent.parent
