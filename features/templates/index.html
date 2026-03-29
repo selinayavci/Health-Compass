@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
   <header class="app-header">
@@ -227,7 +227,7 @@
       const btn = document.getElementById('btn-ara-ana');
       btn.textContent = 'Aranıyor...';
       const mod = document.querySelector('input[name="arama_modu"]:checked').value;
-      const res = await fetch('/api/uzman-bul', {
+      const res = await fetch('https://health-compass-qfnk.onrender.com/api/uzman-bul', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
