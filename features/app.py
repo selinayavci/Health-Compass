@@ -7,11 +7,11 @@ import os
 import traceback
 from pathlib import Path
 
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from dotenv import load_dotenv
-
+from flask_cors import CORS
 # .env: proje kökünden yükle (çalışma dizininden bağımsız)
 _ROOT = Path(__file__).resolve().parent.parent
 load_dotenv(_ROOT / ".env")
@@ -23,7 +23,11 @@ app = Flask(
     static_folder='static',
     static_url_path='/static'
 )
-
+CORS(app, origins=[
+    "https://eclectic-capybara-455bc7.netlify.app",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000"
+])
 # Rate limiting: Güvenlik için istek sınırlama
 limiter = Limiter(
     app=app,
