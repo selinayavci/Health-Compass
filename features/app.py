@@ -25,7 +25,7 @@ app = Flask(
     static_url_path='/static'
 )
 CORS(app, origins=[
-    "https://eclectic-capybara-455bc7.netlify.app",
+    "https://health-compass-qfnk.onrender.com",
     "http://localhost:5000",
     "http://127.0.0.1:5000"
 ])

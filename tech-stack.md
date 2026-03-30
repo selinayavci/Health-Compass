@@ -40,7 +40,7 @@ Neden karmaşık bir mimari (mikroservis, veritabanı, authentication vb.) terci
 | Deploy kolaylığı | Build adımı zorunlu | HTML dosyasını direkt yükle |
 | Smooth Scroll kontrolü | Framework overhead'i var | ✅ `window.scrollTo` ile tam kontrol |
 | DOM manipülasyonu | Virtual DOM — bu proje için gereksiz | ✅ Direkt ve hızlı |
-| Lovable / Netlify uyumu | Ek yapılandırma gerekir | ✅ Direkt çalışır |
+| Render.com uyumu | Ek yapılandırma gerekir | ✅ Direkt çalışır |
 
 **Vanilla JS'in bu projede üstlendiği kritik görevler:**
 - **Smooth Scroll:** "Bu Uzmanı Bul" butonuyla uzman formuna animasyonlu kaydırma (`window.scrollTo({ behavior: 'smooth' })`)
@@ -56,16 +56,9 @@ features/
 │   ├── css/
 │   │   └── style.css          # Tüm görsel tasarım
 │   └── js/
-│       ├── main.js            # Sayfa geçişleri ve genel mantık
-│       ├── symptom-form.js    # Semptom formu ve giriş yönetimi
-│       ├── triage-result.js   # Triage sonucunu ekranda render etme
-│       └── expert-search.js   # Uzman arama ve listeleme
+│       └── (JS dosyaları)
 └── templates/
-    ├── index.html             # Ana sayfa — iki akışa giriş
-    ├── symptoms.html          # Semptom giriş ekranı
-    ├── loading.html           # Analiz yükleme ekranı (animasyonlu)
-    ├── result.html            # Triage sonuç kartı
-    └── experts.html           # Uzman listesi
+    └── index.html             # Tek sayfalık uygulama (SPA benzeri — JS ile bölümler gösterilip gizlenir)
 ```
 
 ### CSS Yaklaşımı: Modern CSS3 + Glassmorphism
@@ -172,11 +165,14 @@ Flask, bu projenin ihtiyaçları için mükemmeldir. FastAPI'nin asenkron ve oto
 
 ```
 health-compass/
-├── app.py                     # Flask uygulamasının kalbi — tüm route'lar burada
-├── gemini_service.py          # Gemini API ile konuşan modül
-├── prompt_templates.py        # AI'a gönderilen prompt şablonları
-├── requirements.txt           # Bağımlılıklar
-└── .env                       # API anahtarı (Git'e yüklenmez!)
+├── features/
+│   ├── app.py              # Flask uygulamasının kalbi — tüm route'lar burada
+│   ├── gemini_service.py   # Gemini API ile konuşan modül
+│   └── prompt_templates.py # AI'a gönderilen prompt şablonları
+├── gemini_service.py       # Kök dizinde de mevcut (import uyumluluğu için)
+├── prompt_templates.py     # Kök dizinde de mevcut
+├── requirements.txt        # Bağımlılıklar
+└── .env                    # API anahtarı (Git'e yüklenmez!)
 ```
 
 ### `app.py` — Flask Route Tasarımı
@@ -244,48 +240,6 @@ def uzman_bul(uzman_turu: str, sehir: str) -> dict:
 
 Bu dosya, Gemini'ye ne söyleneceğini belirler. Prompt kalitesi = uygulama kalitesi.
 
-```python
-TRIAGE_PROMPT = """
-Sen bir tıbbi yönlendirme asistanısın. Görevin tanı koymak değil,
-kullanıcının semptomlarına göre doğru aciliyet seviyesini belirlemektir.
-
-KULLANICI BİLGİLERİ:
-- Semptomlar: {semptom}
-- Yaş: {yas}
-- Kronik hastalık: {kronik}
-- Semptom süresi: {sure}
-
-Yalnızca aşağıdaki JSON formatında yanıt ver, başka hiçbir şey yazma:
-{{
-  "aciliyet": "ACİL" | "BUGÜN" | "YARIN" | "EV_TAKİBİ",
-  "aciliyet_gerekce": "Neden bu seviye seçildi (1-2 cümle)",
-  "uzman_turu": "kardiyoloji | nöroloji | ortopedi | ...",
-  "onerilen_adimlar": ["adım 1", "adım 2", "adım 3"],
-  "uyari": "Bu bir tıbbi tanı değildir."
-}}
-"""
-
-UZMAN_PROMPT = """
-Sen bir sağlık hizmetleri rehberisin.
-{sehir} şehrinde veya yakınında {uzman_turu} alanında deneyimli,
-erişilebilir uzman hekimleri ve kurumları listele.
-
-Yalnızca gerçek ve yasal olarak erişilebilir bilgi ver.
-Aşağıdaki JSON formatında yanıt ver:
-{{
-  "uzmanlar": [
-    {{
-      "ad": "Prof. Dr. ...",
-      "uzmanlik": "...",
-      "kurum": "... Hastanesi",
-      "sehir": "...",
-      "randevu": "MHRS üzerinden | Telefon: ... | Özel randevu"
-    }}
-  ]
-}}
-"""
-```
-
 ---
 
 ## 3. Yapay Zeka Katmanı
@@ -325,59 +279,51 @@ Fallback ATLANIR → Kullanıcıya bilgilendirici mesaj
 
 ---
 
-## 4. Deployment (Yayınlama) — Hibrit Mimari
+## 4. Deployment (Yayınlama) — Render.com (Tek Platform)
 
-Health Compass, Python/Flask tabanlı bir backend içerdiğinden Lovable tek başına yeterli değildir. Lovable ve Netlify yalnızca statik dosyaları çalıştırır; Flask motorunu çalıştıramaz. Bu nedenle **hibrit (karma) bir yayın stratejisi** kullanılır:
+### Neden Lovable veya Netlify değil?
+
+Buildathon brief'inde Lovable ve Netlify örnek platform olarak verilmiştir. Ancak bu platformlar **yalnızca statik frontend** barındırabilir. Health Compass'ın mimarisi Python/Flask tabanlı bir backend içerdiğinden bu platformlar tek başına yeterli değildir:
+
+| Platform | Desteklediği | Desteklemediği |
+|---|---|---|
+| Lovable | React tabanlı statik siteler | Python/Flask backend |
+| Netlify | Statik HTML/JS/CSS | Python/Flask backend (sunucu tarafı kod) |
+| **Render.com** | ✅ Python/Flask uygulamaları | — |
+
+Bu nedenle **hem backend hem frontend Render.com üzerinden** yayınlanmaktadır. Flask uygulaması hem API endpoint'lerini hem de `index.html` arayüzünü aynı sunucudan sunar — ayrı bir frontend hosting'e gerek kalmaz.
 
 | Katman | Platform | Görevi |
 |---|---|---|
-| **Backend (Motor)** | Render.com | Python/Flask kodu burada çalışır. Gemini API ile konuşan yer burasıdır. |
-| **Frontend (Yüz)** | Netlify | HTML/CSS/JS dosyaları buradan servis edilir. Brief'teki "yayın linki" beklentisini bu adres karşılar. |
+| **Backend + Frontend** | Render.com | Flask hem API'yi hem HTML arayüzünü sunar |
 
 ```
-Kullanıcı → Netlify (https://health-compass.netlify.app)
+Kullanıcı → https://health-compass-qfnk.onrender.com
                   |
-                  | fetch('/api/analiz')  →  Render (https://health-compass-qfnk.onrender.com)
-                  |                                    |
-                  |                             Flask + Gemini API
-                  ← ← ← ← JSON yanıt ← ← ← ← ← ← ←
+            Flask uygulaması
+            ├── GET /               → index.html (arayüz)
+            ├── POST /api/analiz    → Gemini analizi
+            └── POST /api/uzman-bul → Uzman listesi
+                  |
+            Gemini 2.5 Flash API
 ```
 
-### Adım 1 — Backend: Render.com
+### Deploy Adımları
 
 ```
-GitHub'a push et → Render otomatik deploy eder → Flask API canlıda
+GitHub'a push et → Render otomatik deploy eder → Uygulama canlıda
 ```
 
 - Ücretsiz katman mevcut (750 saat/ay — buildathon için yeterli)
 - `GEMINI_API_KEY` Environment Variables bölümüne eklenir, kaynak koda yazılmaz
 - Başlatma komutu: `gunicorn features.app:app`
-- Render, `https://health-compass-qfnk.onrender.com` gibi bir URL sağlar
 
-### Adım 2 — Frontend JS'de API Adresini Güncelle
-
-Netlify'a yüklemeden önce, JS dosyalarındaki yerel adres Render URL'siyle değiştirilir:
-
-```javascript
-// Geliştirme ortamı (yerel)
-// fetch('http://127.0.0.1:5000/api/analiz')
-
-// Production (Render URL)
-fetch('https://health-compass-qfnk.onrender.com/api/analiz')
+**Canlı Link:**
+```
+https://health-compass-qfnk.onrender.com
 ```
 
-### Adım 3 — Frontend: Netlify
-
-```
-GitHub'a push et → Netlify otomatik deploy eder → Canlı link hazır
-```
-
-- Tamamen ücretsiz
-- HTTPS otomatik
-- `https://health-compass.netlify.app` gibi temiz bir URL sağlar
-- **Jüriye bu Netlify linki gönderilir** — Brief'teki "yayın linki" beklentisini karşılar
-
-> **Neden Lovable değil Netlify?** İkisi de statik hosting için geçerli seçenektir. Netlify, GitHub entegrasyonu ve özelleştirilebilir URL yapısıyla bu proje için daha uygun bir seçimdir. Lovable ise daha çok sıfırdan UI oluşturma için kullanılır. Netlify, frontend ve backend'in ayrı ayrı yönetildiği profesyonel iş akışlarına (decoupled architecture) daha uygun olduğu için tercih edilmiştir.
+> **Not:** Render'ın ücretsiz katmanında sunucu 15 dakika hareketsiz kalırsa uyku moduna girer. İlk istek 30-60 saniye gecikebilir — bu normaldir.
 
 ---
 
@@ -390,13 +336,13 @@ GitHub'a push et → Netlify otomatik deploy eder → Canlı link hazır
 python --version   # 3.9+ olmalı
 
 # 2. Bağımlılıkları yükle
-pip install flask google-generativeai python-dotenv
+pip install -r requirements.txt
 
 # 3. API anahtarını ayarla (.env dosyası oluştur)
 echo "GEMINI_API_KEY=buraya_anahtarini_yaz" > .env
 
 # 4. Uygulamayı başlat
-python app.py
+python features/app.py
 
 # Tarayıcıda aç: http://localhost:5000
 ```
@@ -410,10 +356,12 @@ python-dotenv==1.0.1
 flask-limiter==3.5.0
 requests==2.31.0
 gunicorn==21.2.0
+flask-cors==4.0.0
 ```
 
 > `google-generativeai==0.8.6` — Gemini 2.5 Flash'ı destekleyen minimum versiyon.
 > `gunicorn` — Production deploy için gerekli WSGI sunucusu.
+> `flask-cors==4.0.0` — Cross-Origin Resource Sharing desteği.
 
 ---
 
@@ -424,7 +372,7 @@ gunicorn==21.2.0
 | API anahtarının sızması | `.env` dosyasına saklanır, `.gitignore`'a eklenir — asla kaynak koduna yazılmaz |
 | Kullanıcı verisi gizliliği | Hiçbir semptom verisi veritabanına kaydedilmez |
 | Yanlış tıbbi bilgi riski | Her yanıtta zorunlu uyarı: *"Bu uygulama tıbbi tanı koymaz"* |
-| Kötüye kullanım (spam) | Flask'ta basit rate limiting (flask-limiter paketi) |
+| Kötüye kullanım (spam) | Flask'ta rate limiting — günde 200, dakikada 10 istek (flask-limiter) |
 
 ---
 
@@ -439,6 +387,6 @@ gunicorn==21.2.0
 | Frontend | Modern CSS3 | Glassmorphism efektleri ve kart animasyonları |
 | Backend | Python & Flask | Sunucu, API endpoint'leri, Gemini entegrasyonu |
 | Güvenlik | flask-limiter | Rate limiting (200/gün, 10/dakika) |
-| Frontend Deploy | Netlify | Ücretsiz, otomatik CI/CD |
-| Backend Deploy | Render.com | Ücretsiz Flask barındırma (gunicorn ile) |
+| CORS | flask-cors | Cross-origin istek desteği |
+| Frontend + Backend Deploy | Render.com | Tek platform, ücretsiz, gunicorn ile |
 | Ortam Yönetimi | python-dotenv | API anahtarı güvenliği, çoklu yol desteği |

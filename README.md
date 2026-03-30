@@ -8,7 +8,7 @@
 
 | | Link |
 |---|---|
-| 🌐 **Yayın Linki** | [Linkini buraya yapıştır] |
+| 🌐 **Yayın Linki** | [health-compass-qfnk.onrender.com](https://health-compass-qfnk.onrender.com) |
 | 🎥 **Demo Videosu** | [Loom/YouTube linkini buraya yapıştır] |
 
 ---
@@ -53,7 +53,7 @@ Health Compass, kullanıcıya **4 adımlı kesintisiz bir deneyim** sunar:
 | AI | Google Gemini 2.5 Flash (+ 2.0 / 1.5 fallback) |
 | Backend | Python 3.11 + Flask 3.x |
 | Frontend | HTML5 + CSS3 (Glassmorphism) + Vanilla JS |
-| Deploy | Netlify (frontend) + Render.com (backend) |
+| Deploy | Render.com (backend + frontend) |
 
 ---
 
@@ -69,7 +69,7 @@ Health Compass, kullanıcıya **4 adımlı kesintisiz bir deneyim** sunar:
 
 **1.** Projeyi klonlayın:
 ```bash
-git clone https://github.com/kullanici-adi/health-compass.git
+git clone https://github.com/selinayavci/health-compass.git
 cd health-compass
 ```
 
@@ -111,6 +111,8 @@ health-compass/
 ├── README.md
 ├── idea.md
 ├── user-flow.md
+├── prd.md
+├── tasks.md
 └── tech-stack.md
 ```
 
@@ -123,6 +125,8 @@ health-compass/
 | [`idea.md`](idea.md) | Problem tanımı, kullanıcı profili, AI'ın rolü |
 | [`user-flow.md`](user-flow.md) | 4 adımlı kullanıcı akışı ve Pusula özelliği |
 | [`tech-stack.md`](tech-stack.md) | Teknoloji kararları ve gerekçeleri |
+| [`prd.md`](prd.md) | Ürün gereksinimleri dokümanı |
+| [`tasks.md`](tasks.md) | Görev listesi ve ilerleme durumu |
 
 ---
 
