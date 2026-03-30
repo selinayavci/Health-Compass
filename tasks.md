@@ -162,28 +162,28 @@
 - [ ] **T-05.1** `POST /api/analiz` endpoint'ini test et — geçerli semptom, doğru JSON dön
 - [ ] **T-05.2** `POST /api/analiz` endpoint'ini boş semptomla test et — hata mesajı dönmeli
 - [ ] **T-05.3** `POST /api/uzman-bul` endpoint'ini test et
-- [ ] **T-05.4** Gemini'nin her 4 aciliyet seviyesini dönebildiğini doğrula
+- [x] **T-05.4** Gemini'nin her 4 aciliyet seviyesini dönebildiğini doğrula
 - [ ] **T-05.5** Rate limiting'in çalıştığını test et
 
 ### 5B — Frontend Testleri
 
-- [ ] **T-05.6** Ana sayfadan → Semptom girişi → Triage sonucu akışını test et
-- [ ] **T-05.7** Ek bilgi formu boş bırakılarak analiz yapıldığında çalıştığını doğrula
+- [x] **T-05.6** Ana sayfadan → Semptom girişi → Triage sonucu akışını test et
+- [x] **T-05.7** Ek bilgi formu boş bırakılarak analiz yapıldığında çalıştığını doğrula
 - [ ] **T-05.8** Cinsiyet ve yaş alanlarının API'ye doğru iletildiğini doğrula
-- [ ] **T-05.9** Pusula özelliğinin (Smooth Scroll + otomatik form doldurma) çalıştığını doğrula
-- [ ] **T-05.10** "Konuma Göre" modunun doğru çalıştığını doğrula
-- [ ] **T-05.11** "Uzmanlığa Göre" modunun doğru çalıştığını doğrula
-- [ ] **T-05.12** Kurum Tercihi filtresinin API'ye iletildiğini doğrula
+- [x] **T-05.9** Pusula özelliğinin (Smooth Scroll + otomatik form doldurma) çalıştığını doğrula
+- [x] **T-05.10** "Konuma Göre" modunun doğru çalıştığını doğrula
+- [x] **T-05.11** "Uzmanlığa Göre" modunun doğru çalıştığını doğrula
+- [x] **T-05.12** Kurum Tercihi filtresinin API'ye iletildiğini doğrula
 - [ ] **T-05.13** Yasal uyarı metninin göründüğünü doğrula
 
 ### 5C — Görsel ve Erişilebilirlik Testleri
 
 - [ ] **T-05.14** Mobil ekranda (375px genişlik) uygulamanın düzgün göründüğünü kontrol et
 - [ ] **T-05.15** Glassmorphism efektinin modern tarayıcılarda çalıştığını doğrula
-- [ ] **T-05.16** Kart animasyonunun akıcı göründüğünü kontrol et
+- [x] **T-05.16** Kart animasyonunun akıcı göründüğünü kontrol et
 - [ ] **T-05.17** Tüm butonların klavye (Tab) ile erişilebildiğini doğrula
 - [ ] **T-05.18** Minimum 14px font boyutunun uygulandığını doğrula
-- [ ] **T-05.19** Her aciliyet seviyesinin hem renkle hem ikonla gösterildiğini kontrol et
+- [x] **T-05.19** Her aciliyet seviyesinin hem renkle hem ikonla gösterildiğini kontrol et
 
 ---
 
@@ -197,7 +197,7 @@
 - [x] **T-06.4** Render'ın Environment Variables bölümüne `GEMINI_API_KEY` değerini ekle
 - [x] **T-06.5** Deploy'un başarılı olduğunu ve Flask API'nin canlıda çalıştığını doğrula
 - [x] **T-06.6** Canlı URL: `https://health-compass-qfnk.onrender.com`
-- [ ] **T-06.7** Canlı URL'yi `README.md` dosyasına ekle *(README'de mevcut — demo video linki bekleniyor)*
+- [x] **T-06.7** Canlı URL'yi `README.md` dosyasına ekle 
 
 > **Not:** Render'ın ücretsiz katmanında sunucu 15 dakika hareketsiz kalırsa uyku moduna girer. İlk istek 30-60 saniye gecikebilir — bu normaldir.
 
@@ -205,8 +205,8 @@
 
 ## 🎬 FAZA 7 — Teslim Hazırlığı
 
-- [ ] **T-07.1** Demo videosu çek (Zoom / Loom / YouTube)
-- [ ] **T-07.2** Demo video linkini `README.md`'ye ekle
+- [x] **T-07.1** Demo videosu çek (Zoom / Loom / YouTube)
+- [x] **T-07.2** Demo video linkini `README.md`'ye ekle
 - [x] **T-07.3** Tüm zorunlu dosyaların mevcut olduğunu kontrol et ✅
 - [x] **T-07.4** GitHub repository'sinin herkese açık (public) olduğunu doğrula
 - [x] **T-07.5** `.env` dosyasının GitHub'a yüklenmediğini doğrula
@@ -223,6 +223,6 @@
 | Faz 3 — CSS + Glassmorphism | 12 | 12 ✅ |
 | Faz 4 — JavaScript + Pusula | 18 | 18 ✅ |
 | Faz 5 — Test | 19 | 0 |
-| Faz 6 — Deploy | 7 | 6 🔄 |
-| Faz 7 — Teslim | 5 | 3 🔄 |
+| Faz 6 — Deploy | 7 | 6 ✅ |
+| Faz 7 — Teslim | 5 | 3 ✅ |
 | **Toplam** | **116** | **94** |

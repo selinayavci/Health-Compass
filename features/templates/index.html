@@ -146,6 +146,9 @@
             </div>
           </div>
         </div>
+        <p style="font-size: 0.75rem; opacity: 0.7; margin-top: 15px; text-align: center;">
+          ⚠️ Health Compass bir tıbbi tanı aracı değildir. Sunulan bilgiler yalnızca genel yönlendirme amaçlıdır. Sağlık kararlarınız için mutlaka bir sağlık profesyoneliyle görüşünüz.
+        </p>
       </div>
     </section>
   </main>
@@ -201,16 +204,16 @@
 
     function sonucKartiniGoster(v) {
       const aciliyet = (v.aciliyet || 'BELİRSİZ').replace(/_/g, ' '); 
-      const seviye = v.aciliyet === 'ACİL' ? 'yuksek' : (v.aciliyet === 'EV_TAKİBİ' ? 'dusuk' : 'orta');
+      const seviye = v.aciliyet === 'ACİL' ? 'yuksek' : (v.aciliyet === 'EV_TAKİBİ' ? 'dusuk' : (v.aciliyet === 'YARIN' ? 'bekle' : 'orta'));
       const baslik = document.getElementById('sonuc-baslik');
       
       baslik.textContent = aciliyet;
-      baslik.style.color = seviye === 'yuksek' ? '#ef4444' : (seviye === 'dusuk' ? '#10b981' : '#f59e0b');
-      document.getElementById('sonuc-icon').innerHTML = ICONS[seviye];
-      document.getElementById('sonuc-alt-baslik').textContent = seviye === 'yuksek' ? 'Acil müdahale gerekebilir.' : (seviye === 'dusuk' ? 'Evde takip yeterli olabilir.' : 'Bir uzmana görünmeniz önerilir.');
+      baslik.style.color = seviye === 'yuksek' ? '#ef4444' : (seviye === 'dusuk' ? '#10b981' : (seviye === 'bekle' ? '#8b5cf6' : '#f59e0b'));
+    
+      document.getElementById('sonuc-icon').innerHTML = ICONS[seviye] || ICONS['orta'];
       
       // Gerekçe kısmını her türlü anahtar kelimeye karşı (aciliyet_gerekce, gerekce, analiz) kontrol et
-      document.getElementById('sonuc-gerekce').textContent = v.aciliyet_gerekce || v.gerekce || v.analiz || 'Analiz başarıyla tamamlandı.';
+      document.getElementById('sonuc-alt-baslik').textContent = seviye === 'yuksek' ? 'Acil müdahale gerekebilir.' : (seviye === 'dusuk' ? 'Evde takip yeterli olabilir.' : (seviye === 'bekle' ? 'Yarın bir uzmana görünebilirsiniz.' : 'Bir uzmana görünmeniz önerilir.'));
       
       if (v.uzman_turu) {
         sonUzmanTuru = v.uzman_turu;
