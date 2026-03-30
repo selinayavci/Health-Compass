@@ -9,7 +9,7 @@
 | | Link |
 |---|---|
 | 🌐 **Yayın Linki** | [health-compass-qfnk.onrender.com](https://health-compass-qfnk.onrender.com) |
-|| 🎥 **Demo Videosu** | [Demo Videosu](https://youtu.be/Vd1AhjDMEiE) |
+| 🎥 **Demo Videosu** | [Demo Videosu](https://youtu.be/Vd1AhjDMEiE) |
 ---
 
 ## 📌 Proje Hakkında
